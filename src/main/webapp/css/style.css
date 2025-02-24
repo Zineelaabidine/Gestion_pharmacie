@@ -1,0 +1,298 @@
+/* Styles globaux */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f7fa;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Styles de la barre latérale */
+.sidebar {
+    width: 250px;
+    background-color: #1e3a8a;
+    color: white;
+    padding: 20px 0;
+    transition: all 0.3s;
+}
+
+.sidebar-header {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.sidebar-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.sidebar-header p {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.sidebar-menu {
+    padding: 20px 0;
+}
+
+.menu-item {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-item.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid #4ade80;
+}
+
+.menu-item i {
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
+/* Styles du contenu principal */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 1.8rem;
+    color: #334155;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-details span {
+    display: block;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #334155;
+}
+
+.user-role {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+/* Styles des cartes du dashboard */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.card-title {
+    font-weight: 600;
+    color: #334155;
+}
+
+.card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+}
+
+/* Couleurs de fond pour les icônes */
+.bg-blue {
+    background-color: #3b82f6;
+}
+
+.bg-green {
+    background-color: #10b981;
+}
+
+.bg-orange {
+    background-color: #f59e0b;
+}
+
+.bg-purple {
+    background-color: #8b5cf6;
+}
+
+.card-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 5px;
+}
+
+.card-label {
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+/* Styles des boutons principaux */
+.main-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.main-button {
+    background: white;
+    border: none;
+    border-radius: 10px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s;
+}
+
+.main-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.button-icon {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.button-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #334155;
+}
+
+.button-description {
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+/* Styles pour la section d'activités récentes */
+.recent-activity {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    font-size: 1.2rem;
+    color: #334155;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.activity-list {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.activity-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 0.9rem;
+    color: white;
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #334155;
+    margin-bottom: 5px;
+}
+
+.activity-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.activity-time {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.activity-user {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #64748b;
+}
