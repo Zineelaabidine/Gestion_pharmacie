@@ -133,7 +133,7 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profil</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="../logout"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+                    <a class="dropdown-item" href="logout"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
                 </div>
             </li>
         </ul>
@@ -187,7 +187,7 @@
                     <div class="col-md-3">
                         <div class="card-counter bg-primary">
                             <i class="fas fa-pills"></i>
-                            <span class="count-numbers">24</span>
+                            <span class="count-numbers">0</span>
                             <span class="count-name">Médicaments</span>
                         </div>
                     </div>
@@ -195,7 +195,7 @@
                     <div class="col-md-3">
                         <div class="card-counter bg-success">
                             <i class="fas fa-user-md"></i>
-                            <span class="count-numbers">5</span>
+                            <span class="count-numbers">0</span>
                             <span class="count-name">Pharmaciens</span>
                         </div>
                     </div>
@@ -203,7 +203,7 @@
                     <div class="col-md-3">
                         <div class="card-counter bg-warning">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="count-numbers">12</span>
+                            <span class="count-numbers">0</span>
                             <span class="count-name">Ventes Aujourd'hui</span>
                         </div>
                     </div>
@@ -211,7 +211,7 @@
                     <div class="col-md-3">
                         <div class="card-counter bg-danger">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <span class="count-numbers">3</span>
+                            <span class="count-numbers">0</span>
                             <span class="count-name">Stock Faible</span>
                         </div>
                     </div>
