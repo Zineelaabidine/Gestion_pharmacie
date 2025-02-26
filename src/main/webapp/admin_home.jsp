@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="jakarta.servlet.http.HttpServlet" %>
 <%@ page import="modele.Admin" %>
 <%@ page import="dao.DashboardDAO" %>
 <%@ page import="java.util.List" %>
@@ -189,7 +190,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="vente_management.jsp">
+                            <a class="nav-link" href="vente">
                                 <i class="fas fa-chart-line"></i> Ventes
                             </a>
                         </li>
