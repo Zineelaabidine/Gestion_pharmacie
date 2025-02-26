@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="modele.Admin" %>
+<%@ page import="dao.DashboardDAO" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.text.DecimalFormat" %>
 <%
     // Vérifiez si l'admin est connecté
     Admin admin = (Admin) session.getAttribute("admin");
@@ -7,6 +12,25 @@
         response.sendRedirect("../login.jsp");
         return;
     }
+    
+    // Initialisation du DAO
+    DashboardDAO dashboardDAO = new DashboardDAO();
+    
+    // Récupération des données pour le dashboard
+    int countMedicaments = dashboardDAO.countMedicaments();
+    int countPharmaciens = dashboardDAO.countPharmaciens();
+    int countVentesToday = dashboardDAO.countVentesToday();
+    int countLowStock = dashboardDAO.countLowStock();
+    
+    // Récupération des ventes récentes
+    List<Map<String, Object>> recentSales = dashboardDAO.getRecentSales(5);
+    
+    // Récupération des médicaments à stock faible
+    List<Map<String, Object>> lowStockMedicaments = dashboardDAO.getLowStockMedicaments();
+    
+    // Formatage pour l'affichage
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    DecimalFormat moneyFormat = new DecimalFormat("0.00");
 %>
 <!DOCTYPE html>
 <html>
@@ -150,27 +174,27 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="medicament_management.jsp">
                                 <i class="fas fa-pills"></i> Médicaments
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="stock_management.jsp">
                                 <i class="fas fa-boxes"></i> Stock
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="pharmacien_management.jsp">
                                 <i class="fas fa-user-md"></i> Pharmaciens
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="vente_management.jsp">
                                 <i class="fas fa-chart-line"></i> Ventes
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="settings.jsp">
                                 <i class="fas fa-cog"></i> Paramètres
                             </a>
                         </li>
@@ -187,7 +211,7 @@
                     <div class="col-md-3">
                         <div class="card-counter bg-primary">
                             <i class="fas fa-pills"></i>
-                            <span class="count-numbers">0</span>
+                            <span class="count-numbers"><%= countMedicaments %></span>
                             <span class="count-name">Médicaments</span>
                         </div>
                     </div>
@@ -195,7 +219,7 @@
                     <div class="col-md-3">
                         <div class="card-counter bg-success">
                             <i class="fas fa-user-md"></i>
-                            <span class="count-numbers">0</span>
+                            <span class="count-numbers"><%= countPharmaciens %></span>
                             <span class="count-name">Pharmaciens</span>
                         </div>
                     </div>
@@ -203,7 +227,7 @@
                     <div class="col-md-3">
                         <div class="card-counter bg-warning">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="count-numbers">0</span>
+                            <span class="count-numbers"><%= countVentesToday %></span>
                             <span class="count-name">Ventes Aujourd'hui</span>
                         </div>
                     </div>
@@ -211,7 +235,7 @@
                     <div class="col-md-3">
                         <div class="card-counter bg-danger">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <span class="count-numbers">0</span>
+                            <span class="count-numbers"><%= countLowStock %></span>
                             <span class="count-name">Stock Faible</span>
                         </div>
                     </div>
@@ -233,31 +257,19 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>24/02/2025</td>
-                                            <td>Ahmed Alaoui</td>
-                                            <td>450.00 DH</td>
-                                        </tr>
-                                        <tr>
-                                            <td>24/02/2025</td>
-                                            <td>Sara Benmoussa</td>
-                                            <td>325.50 DH</td>
-                                        </tr>
-                                        <tr>
-                                            <td>23/02/2025</td>
-                                            <td>Karim Idrissi</td>
-                                            <td>780.75 DH</td>
-                                        </tr>
-                                        <tr>
-                                            <td>23/02/2025</td>
-                                            <td>Ahmed Alaoui</td>
-                                            <td>560.00 DH</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22/02/2025</td>
-                                            <td>Sara Benmoussa</td>
-                                            <td>215.25 DH</td>
-                                        </tr>
+                                        <% if (recentSales.isEmpty()) { %>
+                                            <tr>
+                                                <td colspan="3" class="text-center">Aucune vente récente</td>
+                                            </tr>
+                                        <% } else { %>
+                                            <% for (Map<String, Object> sale : recentSales) { %>
+                                                <tr>
+                                                    <td><%= dateFormat.format(sale.get("date")) %></td>
+                                                    <td><%= sale.get("pharmacien") %></td>
+                                                    <td><%= moneyFormat.format(sale.get("montant")) %> DH</td>
+                                                </tr>
+                                            <% } %>
+                                        <% } %>
                                     </tbody>
                                 </table>
                             </div>
@@ -279,21 +291,27 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Paracétamol 500mg</td>
-                                            <td><span class="badge badge-danger">5</span></td>
-                                            <td><button class="btn btn-sm btn-primary">Réapprovisionner</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Amoxicilline 1g</td>
-                                            <td><span class="badge badge-danger">3</span></td>
-                                            <td><button class="btn btn-sm btn-primary">Réapprovisionner</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Ibuprofène 400mg</td>
-                                            <td><span class="badge badge-warning">8</span></td>
-                                            <td><button class="btn btn-sm btn-primary">Réapprovisionner</button></td>
-                                        </tr>
+                                        <% if (lowStockMedicaments.isEmpty()) { %>
+                                            <tr>
+                                                <td colspan="3" class="text-center">Aucun médicament à stock faible</td>
+                                            </tr>
+                                        <% } else { %>
+                                            <% for (Map<String, Object> med : lowStockMedicaments) { 
+                                                int quantite = (Integer) med.get("quantite");
+                                                String badgeClass = quantite < 5 ? "badge-danger" : "badge-warning";
+                                            %>
+                                                <tr>
+                                                    <td><%= med.get("nom") %></td>
+                                                    <td><span class="badge <%= badgeClass %>"><%= quantite %></span></td>
+                                                    <td>
+                                                        <form action="restock" method="post" class="d-inline">
+                                                            <input type="hidden" name="id_medicament" value="<%= med.get("id") %>">
+                                                            <button type="submit" class="btn btn-sm btn-primary">Réapprovisionner</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        <% } %>
                                     </tbody>
                                 </table>
                             </div>
