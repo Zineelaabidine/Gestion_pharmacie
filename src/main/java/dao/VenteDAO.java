@@ -112,9 +112,10 @@ public class VenteDAO {
 
         try {
             connection = DBConnection.getConnection();
-            String sql = "SELECT v.id_vente, v.date, v.total_vente, vm.id_médicament, m.nom, vm.quantité " +
+            String sql = "SELECT v.id_vente, v.date, v.total_vente, vm.id_médicament, m.nom, vm.quantité, ph.nom " +
                          "FROM Vente v " +
                          "JOIN Vente_Médicament vm ON v.id_vente = vm.id_vente " +
+                         "JOIN Pharmacien ph ON v.id_pharmacien = ph.id_pharmacien "+
                          "JOIN Médicament m ON vm.id_médicament = m.id_médicament " +
                          "ORDER BY v.date DESC"; // Tri des ventes par date décroissante
             statement = connection.prepareStatement(sql);
