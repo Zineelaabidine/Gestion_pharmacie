@@ -1,84 +1,46 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="modele.*" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.List, modele.Medicament, modele.Vente, modele.Pharmacien" %>
+<%@ page import="modele.Admin" %>
 <%
-    // Récupérer la liste des médicaments
-    List<Medicament> medicamentList = (List<Medicament>) request.getAttribute("medicamentList");
-    if (medicamentList == null) {
-        // Rediriger vers un servlet pour charger la liste si elle n'est pas présente
-        response.sendRedirect("medicament_management");
-        return;
-    }
-    
-    // Vérifier si l'administrateur est connecté
+    // Vérifiez si l'admin est connecté
     Admin admin = (Admin) session.getAttribute("admin");
     if (admin == null) {
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("../login.jsp");
         return;
     }
 
-    String successMessage = (String) request.getAttribute("successMessage");
-    String errorMessage = (String) request.getAttribute("errorMessage");
-%>
+    // Récupérer la liste des pharmaciens
+    List<Pharmacien> pharmaciens = (List<Pharmacien>) request.getAttribute("pharmaciens");
+    String pharmacienId = request.getParameter("pharmacienId");
 
+    // Filtrer les ventes par pharmacien si un pharmacien est sélectionné
+    List<Vente> ventes = (List<Vente>) request.getAttribute("ventes");
+    if (pharmacienId != null && !pharmacienId.isEmpty()) {
+        ventes = filterVentesByPharmacien(ventes, pharmacienId);
+    }
+    
+    // Fonction pour filtrer les ventes en fonction du pharmacien sélectionné
+    private List<Vente> filterVentesByPharmacien(List<Vente> ventes, String pharmacienId) {
+        List<Vente> filteredVentes = new ArrayList<>();
+        for (Vente vente : ventes) {
+            if (vente.getPharmacien().getId().equals(pharmacienId)) {
+                filteredVentes.add(vente);
+            }
+        }
+        return filteredVentes;
+    }
+%>
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Gestion des Médicaments - Gestion Pharmacie</title>
+    <title>Gestion des Ventes</title>
+    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
-        .sidebar {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 100;
-            padding: 90px 0 0;
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-            background-color: #343a40;
-        }
-
-        .navbar {
-            box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16);
-        }
-
-        .sidebar-sticky {
-            position: relative;
-            top: 0;
-            height: calc(100vh - 90px);
-            padding-top: 0.5rem;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
-        .sidebar .nav-link.active {
-            color: #fff;
-            background-color: #28a745;
-        }
-        .sidebar .nav-link {
-            font-weight: 500;
-            color: #f8f9fa;
-            padding: 10px 20px;
-        }
-
-        .sidebar .nav-link:hover {
-            color: #fff;
-            background-color: #4caf50;
-        }
-
-        .sidebar .nav-link.active {
-            color: #fff;
-            background-color: #28a745;
-        }
-
-        .sidebar .nav-link i {
-            margin-right: 10px;
-        }
-
-        main {
-            padding-top: 90px;
-        }
+        /* Styles précédemment définis */
+        /* ... (vos autres styles CSS ici) ... */
     </style>
 </head>
 <body>
@@ -109,76 +71,152 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="medicament_management.jsp">
+                            <a class="nav-link" href="#">
                                 <i class="fas fa-pills"></i> Médicaments
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link active" href="stock_management">
                                 <i class="fas fa-boxes"></i> Stock
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="pharmacien_management">
+                                <i class="fas fa-user-md"></i> Pharmaciens
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="vente">
+                                <i class="fas fa-chart-line"></i> Ventes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-cog"></i> Paramètres
                             </a>
                         </li>
                     </ul>
                 </div>
             </nav>
 
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Gestion des Médicaments</h1>
-                </div>
+            <main class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <h2>Gestion des Ventes</h2>
 
-                <% if (successMessage != null && !successMessage.isEmpty()) { %>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <%= successMessage %>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+                <!-- Affichage des messages d'erreur et de succès -->
+                <% 
+                    String error = request.getParameter("error");
+                    String success = request.getParameter("success");
+                    if ("1".equals(error)) { 
+                %>
+                    <p class="error">Une erreur s'est produite lors de l'enregistrement de la vente. Veuillez réessayer.</p>
+                <% 
+                    } else if ("1".equals(success)) { 
+                %>
+                    <p class="success">Vente enregistrée avec succès !</p>
                 <% } %>
 
-                <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <%= errorMessage %>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <% } %>
+                <!-- Formulaire d'enregistrement d'une vente -->
+                <h3>Enregistrer une vente</h3>
+                <form action="controller/EnregistrerVente" method="POST">
+                    <label for="medicament">Médicament :</label>
+                    <select name="medicament" id="medicament" required>
+                        <%
+                            List<Medicament> medicaments = (List<Medicament>) request.getAttribute("medicaments");
+                            if (medicaments != null && !medicaments.isEmpty()) {
+                                for (Medicament medicament : medicaments) {
+                        %>
+                            <option value="<%= medicament.getId_medicament() %>"><%= medicament.getNom() %></option>
+                        <%
+                                }
+                            } else {
+                        %>
+                            <option value="" disabled>Aucun médicament disponible</option>
+                        <% } %>
+                    </select>
 
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead class="thead-dark">
+                    <label for="quantite">Quantité :</label>
+                    <input type="number" name="quantite" id="quantite" min="1" required>
+
+                    <!-- Liste déroulante des pharmaciens -->
+                    <label for="pharmacienId">Pharmacien :</label>
+                    <select name="pharmacienId" id="pharmacienId" required>
+                        <option value="">Sélectionner un pharmacien</option>
+                        <%
+                            if (pharmaciens != null && !pharmaciens.isEmpty()) {
+                                for (Pharmacien pharmacien : pharmaciens) {
+                        %>
+                            <option value="<%= pharmacien.getId() %>" <%= pharmacien.getId().equals(pharmacienId) ? "selected" : "" %>><%= pharmacien.getNom() %></option>
+                        <%
+                                }
+                            } else {
+                        %>
+                            <option value="" disabled>Aucun pharmacien disponible</option>
+                        <% } %>
+                    </select>
+
+                    <button type="submit">Enregistrer la vente</button>
+                </form>
+
+                <!-- Affichage des ventes réalisées -->
+                <h3>Ventes Réalisées</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Médicament</th>
+                            <th>Quantité</th>
+                            <th>Pharmacien</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% 
+                            if (ventes != null && !ventes.isEmpty()) {
+                                for (Vente vente : ventes) {
+                        %>
                             <tr>
-                                <th>ID</th>
-                                <th>Nom</th>
-                                <th>Description</th>
-                                <th>Prix</th>
+                                <td><%= vente.getMedicament() %></td>
+                                <td><%= vente.getQuantite() %></td>
+                                <td><%= vente.getPharmacien().getNom() %></td>
+                                <td><%= vente.getDate() %></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <% if (medicamentList != null && !medicamentList.isEmpty()) { %>
-                                <% for (Medicament medicament : medicamentList) { %>
-                                    <tr>
-                                        <td><%= medicament.getId_medicament() %></td>
-                                        <td><%= medicament.getNom() %></td>
-                                        <td><%= medicament.getDescription() %></td>
-                                        <td><%= medicament.getPrix() %></td>
-                                    </tr>
-                                <% } %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="4" class="text-center">Aucun médicament trouvé</td>
-                                </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
+                        <%
+                                }
+                            } else {
+                        %>
+                            <tr>
+                                <td colspan="4">Aucune vente enregistrée.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <% 
+                        Integer currentPage = (Integer) request.getAttribute("currentPage");
+                        Integer totalPages = (Integer) request.getAttribute("totalPages");
+
+                        if (currentPage != null && totalPages != null && totalPages > 1) {
+                            if (currentPage > 1) { 
+                    %>
+                        <a href="vente_management.jsp?page=<%= currentPage - 1 %>&pharmacienId=<%= pharmacienId %>">&laquo; Précédent</a>
+                    <% 
+                            }
+                            for (int i = 1; i <= totalPages; i++) { 
+                    %>
+                        <a href="vente_management.jsp?page=<%= i %>&pharmacienId=<%= pharmacienId %>" class="<%= (i == currentPage) ? "active" : "" %>"><%= i %></a>
+                    <% 
+                            }
+                            if (currentPage < totalPages) { 
+                    %>
+                        <a href="vente_management.jsp?page=<%= currentPage + 1 %>&pharmacienId=<%= pharmacienId %>">Suivant &raquo;</a>
+                    <% 
+                            }
+                        }
+                    %>
                 </div>
             </main>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
